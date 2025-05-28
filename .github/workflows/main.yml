@@ -3,39 +3,44 @@ name: CI Workflow - MLflow Model Training
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main # Trigger workflow setiap kali ada push ke branch 'main'
+  workflow_dispatch: # Memungkinkan trigger manual dari GitHub UI
 
 jobs:
   train_model:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Menggunakan runner Ubuntu terbaru
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4 # Mengunduh kode repository Anda
 
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
         auto-update-conda: true
-        activate-environment: mlflow-env
-        python-version: 3.11 # Sesuaikan dengan versi python di conda.yaml
-        auto-activate-base: false
+        activate-environment: mlflow-env # Nama environment dari conda.yaml
+        python-version: 3.11 # Sesuaikan dengan versi python di conda.yaml (berdasarkan python3.11.12 Anda)
+        auto-activate-base: false # Penting: Jangan aktifkan base env
 
     - name: Verify Conda Environment Setup
-      shell: bash -l {0}
+      shell: bash -l {0} # Penting: Gunakan login shell
       run: |
+        echo "Conda Info:"
         conda info
-        # conda activate mlflow-env # Baris ini tidak perlu lagi karena conda-incubator/setup-miniconda sudah mengurusnya
+        echo "Conda List:"
         conda list
 
     - name: Run MLflow Project
-      shell: bash -l {0}
+      shell: bash -l {0} # Penting: Gunakan login shell
       run: |
-        cd MLProject
-        conda run -n mlflow-env mlflow run .
+        cd MLProject # Pastikan berada di direktori MLProject
+        # Memanggil mlflow sebagai modul python via conda run untuk keandalan
+        conda run -n mlflow-env python -m mlflow run .
 
     - name: List MLflow Artifacts (Optional for Debugging)
       shell: bash -l {0}
       run: |
+        # Lokasi default mlruns di GitHub Actions runner: /home/runner/work/<repo_name>/<repo_name>/mlruns/
+        # Ganti <repo_name> dengan Workflow-CI
+        echo "Listing MLflow Artifacts:"
         ls -R /home/runner/work/Workflow-CI/Workflow-CI/mlruns/

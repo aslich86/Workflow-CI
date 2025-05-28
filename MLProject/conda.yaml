@@ -1,0 +1,14 @@
+name: mlflow-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11 # Atau 3.12 jika Anda yakin
+  - pandas
+  - scikit-learn=1.6.1 # Sesuaikan dengan versi scikit-learn Anda jika berbeda
+  - mlflow=2.19.0
+  - matplotlib
+  - seaborn
+  - pip
+  - pip:
+    - gunicorn # Ini diperlukan oleh mlflow ui, dan kadang mlflow run juga.

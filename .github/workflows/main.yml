@@ -32,15 +32,14 @@ jobs:
         conda activate mlflow-env # Baris ini mungkin tidak lagi perlu jika sudah auto-activate
         conda list
 
-    - name: Run MLflow Project
-      # Ubah baris berikut
-      shell: bash -l {0} # Penting: Gunakan login shell
+ - name: Run MLflow Project
+      shell: bash -l {0} # Tetap gunakan login shell
       run: |
-        conda activate mlflow-env # Pastikan environment aktif
-        cd MLProject
-        mlflow run .
+        cd MLProject # Pastikan berada di direktori MLProject
+        # Ganti baris 'mlflow run .' dengan perintah berikut:
+        conda run -n mlflow-env mlflow run . # Gunakan 'conda run' untuk memastikan mlflow dijalankan di env yang benar
 
     - name: List MLflow Artifacts (Optional for Debugging)
-      shell: bash -l {0} # Juga gunakan login shell
+      shell: bash -l {0}
       run: |
         ls -R /home/runner/work/Workflow-CI/Workflow-CI/mlruns/

@@ -3,12 +3,12 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.11 # Atau 3.12 jika Anda yakin
+  - python=3.11
   - pandas
-  - scikit-learn=1.6.1 # Sesuaikan dengan versi scikit-learn Anda jika berbeda
-  - mlflow=2.19.0
-  - matplotlib
-  - seaborn
+  - scikit-learn=1.6.1
   - pip
   - pip:
-    - gunicorn # Ini diperlukan oleh mlflow ui, dan kadang mlflow run juga.
+    - mlflow==2.19.0 # Pindahkan mlflow ke instalasi pip untuk memastikan
+    - gunicorn
+    - matplotlib # Tambahkan kembali matplotlib dan seaborn jika ingin tercatat di requirements.txt MLflow
+    - seaborn

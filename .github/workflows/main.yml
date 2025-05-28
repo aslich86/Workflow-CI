@@ -22,6 +22,12 @@ jobs:
         python-version: 3.11
         auto-activate-base: false
 
+    - name: Install MLflow (Explicitly via pip) # Langkah baru untuk instalasi MLflow
+      shell: bash -l {0}
+      run: |
+        conda activate mlflow-env # Pastikan environment aktif
+        pip install mlflow==2.19.0 # Instal MLflow secara eksplisit
+
     - name: Verify Conda Environment Setup (Post-Installation)
       shell: bash -l {0}
       run: |
@@ -30,13 +36,12 @@ jobs:
         echo "Conda List in environment:"
         conda list
         echo "Pip Freeze in environment:"
-        pip freeze # Ini akan menunjukkan paket pip yang terinstal di env Conda
+        pip freeze
 
     - name: Run MLflow Project
       shell: bash -l {0}
       run: |
         cd MLProject
-        # Pastikan autologging aktif di modelling.py
         conda run -n mlflow-env python -m mlflow run .
 
     - name: List MLflow Artifacts (Optional for Debugging)

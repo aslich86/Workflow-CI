@@ -3,26 +3,26 @@ name: CI Workflow - MLflow Model Training
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main # Trigger workflow setiap kali ada push ke branch 'main'
+  workflow_dispatch: # Memungkinkan trigger manual dari GitHub UI
 
 jobs:
   train_model:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Menggunakan runner Ubuntu terbaru
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4 # Mengunduh kode repository Anda
 
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
         auto-update-conda: true
-        activate-environment: mlflow-env
-        python-version: 3.11
-        auto-activate-base: false
+        activate-environment: mlflow-env # Nama environment dari conda.yaml
+        python-version: 3.11 # Sesuaikan dengan versi python Anda (berdasarkan python3.11.12)
+        auto-activate-base: false # Penting: Jangan aktifkan base env
 
-    - name: Install MLflow (Explicitly via pip) # Langkah baru untuk instalasi MLflow
+    - name: Install MLflow (Explicitly via pip)
       shell: bash -l {0}
       run: |
         conda activate mlflow-env # Pastikan environment aktif
@@ -36,16 +36,18 @@ jobs:
         echo "Conda List in environment:"
         conda list
         echo "Pip Freeze in environment:"
-        pip freeze
+        pip freeze # Ini akan menunjukkan paket pip yang terinstal di env Conda
 
     - name: Run MLflow Project
       shell: bash -l {0}
       run: |
-        cd MLProject
+        cd MLProject # Pastikan berada di direktori MLProject
+        # Memanggil mlflow sebagai modul python via conda run untuk keandalan
         conda run -n mlflow-env python -m mlflow run .
 
     - name: List MLflow Artifacts (Optional for Debugging)
       shell: bash -l {0}
       run: |
+        # Path ini harus relatif dari root repo, karena mlruns dibuat di dalam MLProject
         echo "Listing MLflow Artifacts:"
-        ls -R /home/runner/work/Workflow-CI/Workflow-CI/mlruns/
+        ls -R MLProject/mlruns/

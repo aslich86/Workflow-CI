@@ -22,22 +22,18 @@ jobs:
         python-version: 3.11 # Sesuaikan dengan versi python di conda.yaml
         auto-activate-base: false
 
-    # Penting: Tambahkan shell: bash -l {0} atau shell: bash -l
-    # Ini memastikan shell adalah login shell, sehingga conda bisa diinisialisasi
     - name: Verify Conda Environment Setup
-      # Ubah baris berikut
-      shell: bash -l {0} # Penting: Gunakan login shell
+      shell: bash -l {0}
       run: |
         conda info
-        conda activate mlflow-env # Baris ini mungkin tidak lagi perlu jika sudah auto-activate
+        # conda activate mlflow-env # Baris ini tidak perlu lagi karena conda-incubator/setup-miniconda sudah mengurusnya
         conda list
 
- - name: Run MLflow Project
-      shell: bash -l {0} # Tetap gunakan login shell
+    - name: Run MLflow Project
+      shell: bash -l {0}
       run: |
-        cd MLProject # Pastikan berada di direktori MLProject
-        # Ganti baris 'mlflow run .' dengan perintah berikut:
-        conda run -n mlflow-env mlflow run . # Gunakan 'conda run' untuk memastikan mlflow dijalankan di env yang benar
+        cd MLProject
+        conda run -n mlflow-env mlflow run .
 
     - name: List MLflow Artifacts (Optional for Debugging)
       shell: bash -l {0}

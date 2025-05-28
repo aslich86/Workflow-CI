@@ -3,44 +3,44 @@ name: CI Workflow - MLflow Model Training
 on:
   push:
     branches:
-      - main # Trigger workflow setiap kali ada push ke branch 'main'
-  workflow_dispatch: # Memungkinkan trigger manual dari GitHub UI
+      - main
+  workflow_dispatch:
 
 jobs:
   train_model:
-    runs-on: ubuntu-latest # Menggunakan runner Ubuntu terbaru
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4 # Mengunduh kode repository Anda
+      uses: actions/checkout@v4
 
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
         auto-update-conda: true
-        activate-environment: mlflow-env # Nama environment dari conda.yaml
+        activate-environment: mlflow-env
         python-version: 3.11 # Sesuaikan dengan versi python di conda.yaml
-        auto-activate-base: false # Penting: Jangan aktifkan base env
+        auto-activate-base: false
 
+    # Penting: Tambahkan shell: bash -l {0} atau shell: bash -l
+    # Ini memastikan shell adalah login shell, sehingga conda bisa diinisialisasi
     - name: Verify Conda Environment Setup
-      shell: bash
+      # Ubah baris berikut
+      shell: bash -l {0} # Penting: Gunakan login shell
       run: |
         conda info
-        conda activate mlflow-env # Aktifkan environment secara eksplisit
-        conda list # Tampilkan daftar paket untuk debugging
+        conda activate mlflow-env # Baris ini mungkin tidak lagi perlu jika sudah auto-activate
+        conda list
 
     - name: Run MLflow Project
-      shell: bash
+      # Ubah baris berikut
+      shell: bash -l {0} # Penting: Gunakan login shell
       run: |
         conda activate mlflow-env # Pastikan environment aktif
-        cd MLProject # Masuk ke folder MLProject
-        mlflow run . # Jalankan MLflow Project dari direktori saat ini
+        cd MLProject
+        mlflow run .
 
     - name: List MLflow Artifacts (Optional for Debugging)
-      shell: bash
+      shell: bash -l {0} # Juga gunakan login shell
       run: |
-        # Ini akan menunjukkan artefak yang tersimpan setelah run
-        # Hanya untuk verifikasi di log GitHub Actions
         ls -R /home/runner/work/Workflow-CI/Workflow-CI/mlruns/
-        # Path di atas adalah default lokasi mlruns di GitHub Actions runner
-        # Jika menggunakan MLflow UI, artefak akan tersimpan di dalam folder mlruns/0/<run_id>/artifacts
